@@ -7,8 +7,8 @@ import io
 import sys
 import configparser
 import time
-import av_centr_downloader
-import av_centr_converter
+import av_center_downloader
+import av_center_converter
 import shutil
 
 global log
@@ -30,10 +30,10 @@ def main( ):
     make_loger()
     log.info('------------  '+ myname +'  - начало обработки ------------')
 
-    if  av_centr_downloader.download( myname ) :
+    if  av_center_downloader.download( myname ) :
 #        log.info('Конвертация xlsx для исправления формата xlsx')
 #        os.system( myname + '_converter_xlsx.xlsm')
-        av_centr_converter.convert2csv( myname )
+        av_center_converter.convert2csv( myname )
         shutil.copy2( myname + '.csv', 'c://AV_PROM/prices/' + myname +'/'+ myname + '.csv')
     log.info('------------  '+ myname +'  - обработка завершена ------------')
     if os.path.exists('python.log'):
