@@ -16,7 +16,7 @@ def make_loger():
 
 
 
-# curl -o "C:\AV_PROM\prices\ав_центр\av_center.xls" ftp://diler2:FGfhn@85.249.224.228/PRD.xls
+# curl -o "C:\AV_PROM\prices\ав_центр\av_center.xls" ftp://diler2:FGfhn@85.249.224.228/Dealer-price .xlsx
 def download( myname ):
     global log
     pathDwnld = './tmp'
@@ -26,9 +26,9 @@ def download( myname ):
     proxy_port = 99999
     proxy_user_name = "*****"
     proxy_user_password = "*****"
-    ftp_source = 'ftp://85.249.224.228/PRD.xls'
-    new_file   = 'new_av_center.xls'
-    old_file   = 'old_av_center.xls'
+    ftp_source = 'ftp://85.249.224.228/Dealer-price .xlsx'
+    new_file   = 'new_av_center.xlsx'
+    old_file   = 'old_av_center.xlsx'
     make_loger()
     log.debug( 'Begin '   + __name__ + '  downLoader' )
 
@@ -62,3 +62,4 @@ def download( myname ):
 
     except pycurl.error as e:
         print('e=<',e,'>')
+        log.debug( 'Exception in downloader: <' + e + '>'  )

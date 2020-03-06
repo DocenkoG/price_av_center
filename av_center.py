@@ -34,10 +34,10 @@ def main( ):
 #        log.info('Конвертация xlsx для исправления формата xlsx')
 #        os.system( myname + '_converter_xlsx.xlsm')
         av_center_converter.convert2csv( myname )
-        shutil.copy2( myname + '.csv', 'c://AV_PROM/prices/' + myname +'/'+ myname + '.csv')
+#        shutil.copy2( myname + '.csv', 'c://AV_PROM/prices/' + myname +'/'+ myname + '.csv')
     log.info('------------  '+ myname +'  - обработка завершена ------------')
-    if os.path.exists('python.log'):
-        shutil.copy2( 'python.log',    'c://AV_PROM/prices/' + myname +'/python.log')
+#    if os.path.exists('python.log'):
+#        shutil.copy2( 'python.log',    'c://AV_PROM/prices/' + myname +'/python.log')
 
 
 
