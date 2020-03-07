@@ -4,6 +4,36 @@ import openpyxl                     # Для .xlsx
 import re
 
 
+
+def openX(fileName ):
+    typeX = fileName[fileName.find('.')+1 :]
+    if typeX.lower() == 'xlsx':
+        book = openpyxl.load_workbook(filename = fileName, read_only=False, keep_vba=False, data_only=False) # xlsx
+    else:
+        book = xlrd.open_workbook( fileName.encode('cp1251'), formatting_info=True)                          # xls
+    return book
+
+
+
+def sheetByName( fileName
+                ,sheetName):
+    typeX = fileName[fileName.find('.')+1 :]
+    try:
+        if typeX.lower() == 'xls':
+            book = xlrd.open_workbook( fileName.encode('cp1251'), formatting_info=True)                          # xls
+            sheet = book.sheet_by_name(sheetName)
+        else:
+            book = openpyxl.load_workbook(filename=fileName, read_only=False, keep_vba=False, data_only=False)  # xlsx
+            sheet = book[sheetName]  # xlsx
+    except Exception as e:
+        print(e)
+        sheet = False
+        book = False
+    return book, sheet
+
+    #sheet = book.worksheets[0]                                                                              # xlsx
+    #sheet = book.sheets()[0]                                                                                # xls
+
 def getCellXlsx(  row       # номер строки
                 , col       # номер колонки 
                 , isDigit   # Признак, числовое ли значение нужно из этого поля
@@ -26,7 +56,11 @@ def getCellXlsx(  row       # номер строки
             else :
                 ss = str(cellValue)
         else :
-            ss = '0'
+#           ss = '0'
+            try:
+                ss = str(float(cellValue.replace('руб.','').replace('р','').replace(',','.').replace(' ','')))
+            except ValueError as e:
+                ss='0'
     else :
         if (cellValue == None) : 
             ss = ''
@@ -63,7 +97,8 @@ def getCell(  row       # номер строки
             else :
                 ss = str(cellValue)
         else :
-            ss = '0'
+            ss = str(float(cellValue))
+            print(cellValue, ss)
     else :
         if (cellType in (2,3)) :                    # numeric
             if int(cellValue) == cellValue:
@@ -84,6 +119,28 @@ def subInParentheses( sourceString):
     else:
         key = '' 
     return key
+
+
+
+def currencyTypeX(row, col, sheet):
+    '''
+    Функция анализирует "формат ячейки" таблицы excel, является ли он "денежным"
+    и какая валюта указана в этом формате.
+    Распознаются не все валюты и способы их описания.
+    '''
+    fmt_str = sheet.cell(row=row, column=col).number_format
+    if ('\u20bd' in fmt_str or
+        'р' in fmt_str):
+        val = 'RUR'
+    elif '\xa3' in fmt_str:
+        val = 'GBP'
+    elif chr(8364) in fmt_str:
+        val = 'EUR'
+    elif (fmt_str.find('USD')>=0) or (fmt_str.find('[$$')>=0) :
+        val = 'USD'
+    else:
+        val = ''
+    return val
 
 
 
@@ -109,6 +166,21 @@ def currencyType(sheet, rowx, colx):
         val = ''
     return val
 
+'''
+
+[$$-409]#,##0.0
+[$$-409]#,##0.0
+[$$-409]#,##0.0
+[$$-409]#,##0.0
+[$$-409]#,##0.0
+#,##0.0"р."
+#,##0.0"р."
+#,##0.0"р."
+#,##0.0"р."
+#,##0.0"р."
+#
+'''
+
 
 
 def dump_cell(sheet, rowx, colx):
@@ -125,3 +197,21 @@ def quoted(sss):
     if ((',' in sss) or ('"' in sss) or ('\n' in sss))  and not(sss[0]=='"' and sss[-1]=='"') :
         sss = '"'+sss.replace('"','""')+'"'
     return sss
+
+
+def nameToId(value):
+    result = ''
+    for ch in value:
+        if (ch != " " and ch != "/" and ch != "\\" and ch != '_' and ch != "," and
+                ch != "'" and ch != "!" and ch != "@" and                 # and ch != "." and ch != "-"
+                ch != "#" and ch != "$" and ch != "%" and ch != "^" and ch != "&" and
+                ch != "*" and ch != "(" and ch != ")" and ch != "[" and ch != "]" and
+                ch != "{" and ch != ":" and ch != '"' and ch != ";"):
+            result = result + ch
+
+    length = len(result)
+    if length > 50:
+        point = int(length / 2)
+        result = result[:13] + result[point - 12:point + 13] + result[-12:]
+
+    return result
