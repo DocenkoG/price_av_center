@@ -278,14 +278,14 @@ def make_loger():
     log = logging.getLogger('logFile')
 
 
-def main(dealerName):
+def main():
     """ Обработка прайсов выполняется согласно файлов конфигурации.
     Для этого в текущей папке должны быть файлы конфигурации, описывающие
     свойства файла и правила обработки. По одному конфигу на каждый
     прайс или раздел прайса со своими правилами обработки
     """
     make_loger()
-    log.info('          ' + dealerName)
+    log.info('±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±')
 
     rc_download = False
 
@@ -309,7 +309,4 @@ def main(dealerName):
 
 
 if __name__ == '__main__':
-    myName = os.path.basename(os.path.splitext(sys.argv[0])[0])
-    mydir    = os.path.dirname (sys.argv[0])
-    print(mydir, myName)
-    main( myName)
+    main()
